@@ -6,7 +6,12 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		9710A26530B0ED54009E939E /* LJ_Icon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 9710A26030B0ED54009E939E /* LJ_Icon.icon */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
+		9710A26030B0ED54009E939E /* LJ_Icon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = LJ_Icon.icon; sourceTree = "<group>"; };
 		A1B2C3D40000000000000001 /* LearningStreak.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LearningStreak.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -32,6 +37,7 @@
 		A1B2C3D40000000000000004 = {
 			isa = PBXGroup;
 			children = (
+				9710A26030B0ED54009E939E /* LJ_Icon.icon */,
 				A1B2C3D40000000000000002 /* LearningStreak */,
 				A1B2C3D40000000000000005 /* Products */,
 			);
@@ -109,6 +115,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9710A26530B0ED54009E939E /* LJ_Icon.icon in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -237,6 +244,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = YA4QXB29JW;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "Learning Streak";
@@ -265,6 +273,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = YA4QXB29JW;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "Learning Streak";
