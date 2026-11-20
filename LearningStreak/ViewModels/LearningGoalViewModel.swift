@@ -1,11 +1,17 @@
 import Foundation
 import Combine
 
-// VIEWMODEL — Task 4: Change Learning goal  (also Task 3 "Set a goal")
-// Starts filled with the current goal. Tapping ✓:
-//   • Goal already ended (Task 3)      → start the new / same goal right away
-//   • Something changed during a goal  → show the "Update goal" alert (streak starts over)
-//   • Nothing changed                  → just close
+// VIEWMODEL — Goal View: Task 3 "Set a goal" and Task 4 "Change Learning goal"
+// Two ways in:
+//
+//   NEW GOAL mode   (from the Success / Fail page, "Set a goal")
+//     • opens EMPTY (Week selected), no back button — ✓ is the only way out
+//     • ✓ → start the new goal from 0 → back to the Toggle page
+//
+//   EDIT mode       (from the pencil icon on the Toggle page)
+//     • opens filled with the current goal
+//     • something changed → "Update goal" alert (streak starts over)
+//     • nothing changed   → just close
 
 final class LearningGoalViewModel: ObservableObject {
 
@@ -27,14 +33,20 @@ final class LearningGoalViewModel: ObservableObject {
     let updateTitle = "Update"
     let durations = GoalDuration.allCases
 
+    /// true = opened from the Success / Fail page ("Set a goal").   ← this was missing
+    let isNewGoal: Bool
+
     // MARK: Data
 
     private let stores: AppStores
 
-    init(stores: AppStores) {
+    init(stores: AppStores, isNewGoal: Bool) {                       // ← isNewGoal added here
         self.stores = stores
-        topic = stores.goal.goal.topic
-        selectedDuration = stores.goal.goal.duration
+        self.isNewGoal = isNewGoal
+        // New goal (from Success / Fail) → start empty. Edit (pencil) → keep the current goal.
+        topic = isNewGoal ? "" : stores.goal.goal.topic
+        selectedDuration = isNewGoal ? .week : stores.goal.goal.duration
+        print("GOAL VIEW OPENED (\(isNewGoal ? "new goal" : "edit")) → topic: \(topic), duration: \(selectedDuration.title)")
     }
 
     // MARK: Questions
@@ -56,11 +68,11 @@ final class LearningGoalViewModel: ObservableObject {
 
     /// ✓ tapped. Returns `true` when the page should close.
     func checkmarkTapped() -> Bool {
-        if stores.state.goalStatus != .active {   // Task 3: nothing to lose
+        if isNewGoal || stores.state.goalStatus != .active {   // Task 3: start again from 0
             applyGoal()
             return true
         }
-        if hasChanges {                           // Task 4: warn first
+        if hasChanges {                                        // Task 4: warn first
             showUpdateAlert = true
             return false
         }

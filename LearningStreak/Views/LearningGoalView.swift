@@ -10,8 +10,8 @@ struct LearningGoalView: View {
     @Environment(\.dismiss) private var dismiss
     @FocusState private var isTyping: Bool
 
-    init(stores: AppStores) {
-        _viewModel = StateObject(wrappedValue: LearningGoalViewModel(stores: stores))
+    init(stores: AppStores, isNewGoal: Bool = false) {
+        _viewModel = StateObject(wrappedValue: LearningGoalViewModel(stores: stores, isNewGoal: isNewGoal))
     }
 
     var body: some View {
@@ -65,3 +65,4 @@ struct LearningGoalView: View {
     NavigationStack { LearningGoalView(stores: .preview(learned: 3)) }
         .preferredColorScheme(.dark)
 }
+
