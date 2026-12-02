@@ -2,55 +2,69 @@ import SwiftUI
 
 // VIEW — Task 5: Open Calendar to see all previous learned days
 // Activity Page → Calendar icon → Calendar Page
-// Apple's default calendar (AppleCalendarView.swift): orange circle = learned, blue dot = freezed.
-// View only. CalendarViewModel gives the days; this file only draws.
+// Custom calendar like the design: months scroll down, filled circles —
+// orange = learned, blue = freezed, solid orange = today. View only.
+// ONLY drawing here; CalendarViewModel prepares the months and the styles.
 
 struct CalendarView: View {
     @StateObject private var viewModel: CalendarViewModel
+    private let columns = Array(repeating: GridItem(.flexible(), spacing: 0), count: 7)
 
     init(stores: AppStores) {
         _viewModel = StateObject(wrappedValue: CalendarViewModel(stores: stores))
     }
 
     var body: some View {
-        VStack(spacing: 20) {
-            AppleCalendarView(
-                learnedDates: viewModel.learnedDates,
-                freezedDates: viewModel.freezedDates,
-                styleFor: viewModel.dayStyle
-            )
-
-            legend
-            Spacer()
+        ScrollViewReader { proxy in
+            ScrollView {
+                LazyVStack(alignment: .leading, spacing: 20) {
+                    ForEach(viewModel.months, id: \.self) { month in
+                        monthSection(month)
+                            .id(month)
+                        Rectangle()                       // line between months
+                            .fill(Color.divider)
+                            .frame(height: 0.5)
+                    }
+                }
+                .padding(16)
+            }
+            .onAppear {
+                if let current = viewModel.currentMonth { proxy.scrollTo(current, anchor: .top) }
+            }
         }
-        .padding(.horizontal, 8)
-        .padding(.top, 8)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.appBackground.ignoresSafeArea())
         .navigationTitle(viewModel.pageTitle)
         .navigationBarTitleDisplayMode(.inline)
     }
 
-    // MARK: Legend — what the marks mean
+    // MARK: One month — "January 2026", SUN MON ..., day circles
 
-    private var legend: some View {
-        HStack(spacing: 24) {
-            HStack(spacing: 8) {
-                Circle().fill(Color.appOrange).frame(width: 18, height: 18)
-                Text(viewModel.learnedLegend)
-            }
-            HStack(spacing: 8) {
-                Circle().fill(Color.freezeBlue).frame(width: 8, height: 8)
-                    .frame(width: 18, height: 18)
-                Text(viewModel.freezedLegend)
+    private func monthSection(_ month: Date) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text(viewModel.monthTitle(month))
+                .font(.system(size: 17, weight: .semibold))
+                .foregroundStyle(Color.primaryText)
+
+            LazyVGrid(columns: columns, spacing: 8) {
+                ForEach(viewModel.weekdaySymbols, id: \.self) { symbol in
+                    Text(symbol)
+                        .font(.system(size: 13, weight: .semibold))
+                        .foregroundStyle(Color.secondaryText)
+                }
+                ForEach(Array(viewModel.grid(for: month).enumerated()), id: \.offset) { _, date in
+                    if let date {
+                        DayCircle(number: viewModel.dayNumber(date), style: viewModel.dayStyle(date), size: 40)
+                    } else {
+                        Color.clear.frame(height: 40)     // empty slot before day 1
+                    }
+                }
             }
         }
-        .font(.system(size: 15))
-        .foregroundStyle(Color.secondaryText)
+        .allowsHitTesting(false)   // view only
     }
 }
 
-#Preview("Task 5 – Apple calendar") {
-    NavigationStack { CalendarView(stores: .preview(learned: 10, freezed: 3, duration: .month)) }
+#Preview("Task 5 – Activities calendar") {
+    NavigationStack { CalendarView(stores: .preview(learned: 25, freezed: 4, duration: .month)) }
         .preferredColorScheme(.dark)
 }

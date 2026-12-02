@@ -24,6 +24,7 @@ extension Color {
 
     // Lines and effects
     static let inputLine          = Color(hex: "FFFFFF").opacity(0.20)   // line under the text field
+    static let divider            = Color(hex: "FFFFFF").opacity(0.15)   // lines between calendar months
     static let loggedCircleBorder = Color(hex: "FFFFFF").opacity(0.15)
     static let orangeGlow         = Color.appOrange.opacity(0.35)        // shadow under the big circle
 

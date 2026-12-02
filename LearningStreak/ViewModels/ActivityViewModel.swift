@@ -80,7 +80,7 @@ final class ActivityViewModel: ObservableObject {
 
     // MARK: Task 3 texts
 
-    var finishedIcon: String { goalStatus == .completed ? "hands.clap.fill" : "xmark.seal" }
+    var finishedIcon: String { goalStatus == .completed ? "hands.and.sparkles.fill" : "xmark.seal" }
     var finishedTitle: String { goalStatus == .completed ? "Well done!" : "You didn't reach your goal this time." }
     var finishedSubtitle: String { goalStatus == .completed ? "Ready for your next goal?" : "Want to set another goal?" }
     let setGoalTitle = "Set a goal"

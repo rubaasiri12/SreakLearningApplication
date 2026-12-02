@@ -16,6 +16,7 @@ enum AppCalendar {
     static let keyFormatter = makeFormatter("yyyy-MM-dd", posix: true)
     static let fullDateFormatter = makeFormatter("EEEE, d MMMM")   // Thursday, 24 October
     static let dayNumberFormatter = makeFormatter("d")             // 24
+    static let monthYearFormatter = makeFormatter("MMMM yyyy")     // January 2026
 
     /// "2026-11-18" — one label per day.
     static func key(_ date: Date) -> String { keyFormatter.string(from: date) }
@@ -24,6 +25,22 @@ enum AppCalendar {
 
     /// "S", "M", "T", ... (Activity page)
     static var letterWeekdays: [String] { calendar.veryShortWeekdaySymbols }
+
+    /// "SUN", "MON", ... (Calendar page)
+    static var shortWeekdays: [String] { calendar.shortWeekdaySymbols.map { $0.uppercased() } }
+
+    static func startOfMonth(_ date: Date) -> Date {
+        calendar.dateInterval(of: .month, for: date)?.start ?? startOfDay(date)
+    }
+
+    /// Month grid cells; `nil` = empty slot before day 1.
+    static func monthGrid(for monthStart: Date) -> [Date?] {
+        guard let range = calendar.range(of: .day, in: .month, for: monthStart) else { return [] }
+        let weekday = calendar.component(.weekday, from: monthStart)
+        let leading = (weekday - calendar.firstWeekday + 7) % 7
+        let days: [Date?] = range.compactMap { calendar.date(byAdding: .day, value: $0 - 1, to: monthStart) }
+        return Array(repeating: nil, count: leading) + days
+    }
 
     /// The 7 days (Sunday → Saturday) of the week that contains `date`.
     static func daysOfWeek(containing date: Date) -> [Date] {
